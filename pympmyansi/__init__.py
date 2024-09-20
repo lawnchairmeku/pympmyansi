@@ -1,5 +1,6 @@
 import sys
 
+
 def pymp(input: str, code: str) -> str:
     """Returns a string enclosed within the necessary ANSI escape codes.
 
