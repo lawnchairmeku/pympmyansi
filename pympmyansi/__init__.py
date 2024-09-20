@@ -1,22 +1,6 @@
 import sys
 
 
-def pymp(input: str, code: str) -> str:
-    """Returns a string enclosed within the necessary ANSI escape codes.
-
-    Args:
-        input (str): The input string.
-        color (str): The desired code.
-
-    Returns:
-        str
-    """
-    if not sys.stdout.isatty():
-        return input
-    else:
-        return codes[code] + input + codes['end']
-
-
 # TODO figure out how to do this in a way that enables ide autocompletion
 # i cant figure out the enum
 codes = {
@@ -93,3 +77,50 @@ codes = {
     'crossed':      "\033[9m",
     'end':          "\033[0m",
 }
+
+
+def pymp(input: str, code: str) -> str:
+    """Returns a string enclosed within the necessary ANSI escape codes.
+
+    Args:
+        input (str): The input string.
+        color (str): The desired code.
+
+    Returns:
+        str
+    """
+    if not sys.stdout.isatty():
+        return input
+    else:
+        return codes[code] + input + codes['end']
+
+
+def pymp256(input: str, color: int, fgorbg: str = 'fg'):
+    """"""
+    if not sys.stdout.isatty():
+        return input
+    if color < 0 or color > 255:
+        raise Exception("Invalid color!")
+    else:
+        if fgorbg == 'fg':
+            return "\033[38;5;" + \
+                str(color) + 'm' + input + codes['end']  # type: ignore
+        else:
+            return "\033[48;5;" + \
+                str(color) + 'm' + input + codes['end']  # type: ignore
+
+
+def pymprgb(input: str, rgb: tuple[int, int, int], fgorbg: str):
+    """"""
+    if not sys.stdout.isatty():
+        return input
+    for x in rgb:
+        if x < 0 or x > 255:
+            raise Exception("Invalid color!")
+    else:
+        tempstr = str(rgb[0]) + ";" + str(rgb[1]) + ";" + \
+            str(rgb[2]) + "m"
+        if fgorbg == 'fg':
+            return "\033[38;2;" + tempstr + input + codes['end']
+        else:
+            return "\033[48;2;" + tempstr + input + codes['end']
